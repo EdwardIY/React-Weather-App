@@ -1,0 +1,251 @@
+
+
+  Right now you are setting searching in search and ending it in time, 
+  but you need to end it when week has finished, also you need to give each comp
+  the ability to set searching to false if an error occurs while fetching.
+
+  if weather is displayed already, only update it if fetch has gone successfully
+
+
+
+
+ 1. Search throws error when there is space in city name +
+ 2. Split SearchedTime func into two functions 1 for corrds and one for city /  Implement city option in time comp +
+
+ 1. Attempted to make things more modular in Time comp, make sure everything still works +
+2. Update City name test to account for 'cityname,countrycode' +
+   
+  
+  1. Find out and finish how you are going to deal with 'see examples' for error handling of city name.
+  Btn ? Examples message ? Addiitional state ? Logical rendering ? +
+    
+  2. Add this solution to coord search as well - note = maybe take this fetaure out and do something for simple/clean like put examle in search bar by doing this you can also clear up some state
+  3. Add error handling to fetch call -
+  4. Handle loading in app comp not children comps? useEffect(searching ? true : false) +
+
+  1. Start  Today +
+
+  1. Finished myLocation() but put logic in to handle a description that is both two words and 1 word
+  it works fine for two words but make sure it works fine with 1 as well - 
+  2. Start and finish searchedlocation() +
+  3. Note 'You might be able to have each weather comp have there own modular fetch call for weather so that yo dont have to 
+  write the same code twice, I believ this is the approach I took in the time comp'+ "Yes i will be doing this i wrote 1 fetch call for today and had all 3 options use it, I will do the same with week'
+
+
+  1. Start and week +
+  2. Note: I took setSearching(false) out of time so loading will buffer, its suppose to be in week refer to note1+
+
+
+
+  DONE!
+  This app can currenlty
+  - Get weather of a location of today along with the rest of the week
+  using 3 options corrds, city name, and your current position
+
+
+
+
+Additional features:
+- Debouncing for input
+- Background feature(slide show/based on weather)
+- Weather map
+
+Optimiztion points:
+  1. Time api runs twice for no reason
+  2. Using the same enpoint to get the time and weather so actually i should only need
+  to call it once in some sort of root api, rather than call it both in the time comp and today component
+  3. I have repeated the same error handling in every fetch for each component
+  4. In today  I am dealing with the 'Location' detail 3 different ways
+    - For 2 I am simply assigning it to the value of name that comes back in the response
+    - For 1 I am assigning it to  searchDetails[0]
+    - for 0 i am calling a whole api for the location since i found out that using home corrds is slighly inacurate
+ it would be nice if we could lower this uniqueness down to at least 2 if not 1 solution that can deal with all 0,1,2
+
+  Current bugs:
+  - 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import { useEffect, useState } from 'react';
+import { compileFunction } from 'vm'
+
+
+const months = ["January", "February", "March", "April", "May","June", "July", "August", "September", "October", "November", "December"];
+const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+interface TimeProps  {
+  searchType: number
+  searching: boolean
+  isSearching: Function
+  searchDetails: string | number[]
+  error:boolean | string
+  setError:Function
+}
+export default function Time({searchType,searching,isSearching,searchDetails,error,setError}:TimeProps) {
+  const [time, setTime] = useState<string>();
+  const [date, setDate] = useState<any[]>();
+  //const [ready, setReady] = useState(false);
+
+  let searchedTZ:number | null;
+  
+  useEffect(() => myTime(), []) // On Initial Page Load get my time
+
+  useEffect(() => { // If searching is false/finished and we have no error > start clock
+    let tick: any;
+    searchedTZ = null
+    console.log('Time setter ran ' + tick)
+
+    if (!searching && !error) { 
+      if (!searchType) tick = setInterval(myTime, 1000);
+      else if (searchType) tick = setInterval(searchedTime, 5000);
+    }
+    return () => clearInterval(tick) 
+  }, [searching, error])
+  
+
+  useEffect(() => {   // On Search
+    if (searching) {
+      //console.log(ready)
+      //setReady(false)
+      console.log('STARTED SEARCH')
+      if (!searchType) myTime();
+      else searchedTime()
+    }
+
+  }, [searching,/*searchDetails*/])
+
+
+  function myTime() { 
+    console.log('MYTIME RAN!')
+
+    let timeDraft, dateDraft: string[];
+    timeDraft = new Date().toLocaleTimeString().split(':');
+    dateDraft = new Date().toDateString().split(' ')
+    let timeInfo = getTimeInfo(timeDraft,dateDraft);
+
+    updateDisplay(timeInfo[0],timeInfo.slice(1))
+    // if (!ready) setReady(true)
+    //setReady(true)
+    if (searching) {
+      console.log('set Searching to False: TIME COMP : in myTime')
+      isSearching(false)
+    } 
+
+  }
+  async function searchedTime() {
+    console.log('SEARCHEDTIME RAN!')
+    console.log(searchDetails)
+    console.log(searchedTZ)
+    let timeDraft, dateDraft: string[];
+    // In error handling if error set error to true and still set isSearching to false
+    if (searchType === 2) {
+      if (!searchedTZ) {
+        console.log('API CALLED!')
+        await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${searchDetails[0]}&lon=${searchDetails[1]}&appid=bf24319051981742cc7c6e9da6376dd2`)
+        .then(res => res.json())
+          .then((data) => {
+            console.log(data)
+            searchedTZ = data.timezone
+        } )
+      } 
+      if (searchedTZ) {
+        const offsetSeconds = searchedTZ;
+        const now = new Date();
+        const utcTime = now.getTime() + (now.getTimezoneOffset() * 60000);
+        const offsetTime = utcTime + (offsetSeconds * 1000);
+        const date = new Date(offsetTime);
+        console.log(searchedTZ)
+
+        timeDraft = date.toLocaleTimeString().split(':');
+        dateDraft = date.toDateString().split(' ');
+        let timeInfo = getTimeInfo(timeDraft, dateDraft);
+
+        console.log(timeDraft)
+        updateDisplay(timeInfo[0], timeInfo.slice(1))
+        // if (!ready) setReady(true)
+        //setReady(true)
+        if (searching) {
+          console.log('set Searching to False: TIME COMP : searhedTime')
+          isSearching(false)
+        }
+      }
+
+
+ 
+   }
+
+
+
+
+  }
+  function getTimeInfo(timeDraft:string[], dateDraft:string[]) {
+    let weekDay, month, day, year, time;
+    weekDay = weekDays.filter((day) => day.includes(dateDraft[0])).join('');
+    month = months.filter((month) => month.includes(dateDraft[1])).join('');
+    day = dateDraft[2]
+    year = dateDraft[3]
+    time = `${timeDraft[0]}:${timeDraft[1]} ${timeDraft.slice(-1)[0].slice(-2)}`
+
+    return [time,weekDay, month, day, year]
+  }
+  function updateDisplay(time: string, date: any[]) {
+    console.log('TIME UPDATED!')
+
+    setTime(time)
+    setDate(date)
+  }
+
+
+
+
+
+    return <section className="timeContainer">
+            <span className="time">{time && time}</span>
+            <span className="date">{date && date[0]} <br /> {date && date[1]} {date && date[2]}, {date && date[3]}</span>
+          </section>
+}

@@ -1,13 +1,359 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,800;1,900&display=swap');
+        * {
+            box-sizing: border-box;
+            text-align: none;
+            border: none;
+            outline: none;
+            background: unset;
+            padding: 0;
+            margin: 0;
+            line-height: 1.6em;
+        }
+        body {
+            background: url(./images/snow.jpg) center center;
+            height: 100vh;
+            width: 100vw;
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-color: rgba(0, 0, 0, 0.484);
+            background-blend-mode: overlay;
+            font-family: poppins;
+            position: relative;
+            color:white;
+        }
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        .btn {
+            background-color: rgba(0, 0, 0, 0.61);
+            width: 150px;
+            text-align: center;
+            padding: .4em 0em;
+            border-radius: 15px;
+            font-weight: 200;
+            transition: .2s;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: black;
+        }
+        .btn-sm {
+            width: 100px;
+        }
+
+
+        
+        /* COMP 1 */
+        .loader {
+            position:absolute;
+            top:0px;
+            left:0px;
+            z-index: 1;
+            opacity: 1;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.523);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap:30px;
+        }
+        .loader div {
+            width: 20px;
+            height: 20px;
+            background-color: white;
+            border-radius: 50%;
+        }
+        .loader div:nth-child(1) { 
+            animation: b1 1s ease-in-out infinite;
+        }
+        
+        .loader div:nth-child(2) { 
+            animation: b2 1s ease-in-out infinite;
+            animation-delay: .1s;
+        }
+        .loader div:nth-child(3) { 
+            animation: b3 1s ease-in-out infinite;
+            animation-delay: .2s;
+        }
+        .loader div:nth-child(4) { 
+            animation: b4 1s ease-in-out infinite;
+            animation-delay: .3s;
+        }
+        @keyframes b1{
+            0% {opacity:0; margin-top: -40px}
+            100% {opacity: 1;}
+        }
+        @keyframes b2{
+            0% {opacity:0; margin-top: -40px}
+            100% {opacity: 1;}
+        }
+        @keyframes b3{
+            0% {opacity: 0; margin-top: -40px}
+            100% {opacity: 1;}
+        }
+        @keyframes b4{
+            0% {opacity: .0; margin-top: -40px}
+            100% {opacity: 1;}
+        } 
+
+
+
+        /* COMP 2 */
+        .search {
+            position: absolute;
+            top:20px;
+            display: flex;
+            width: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap:20px;
+        }
+        .searchInput {
+            display: flex;
+            align-items: center;
+            justify-content: end;
+            gap:10px;
+            background-color: rgba(0, 0, 0, 0.667);
+            border-radius: 23px;
+            padding: .6em .8em;
+            cursor: pointer;
+            width: 375px;
+
+        }
+        .searchInput input {
+            color: inherit;
+            font-family: inherit;
+            height: 100%;
+            width: 100%;
+            padding-left: 1.5em;
+            text-align: center;
+        }
+        .searchInput svg {
+            color:rgba(245, 245, 245, 0.724);
+            font-size: 20px;
+        }
+        .searchInput i:hover {
+            color:white;
+        }
+        .searchOC {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap:15px;
+        }
+        .msg {
+            background-color: rgba(0, 0, 0, 0.728);
+            padding: .5em 1em;
+            font-weight: bold;
+            opacity: 0;
+            margin-top: 1em;
+            transition: .2s;
+        }
+        .msg_2 {
+            font-size: 15px;
+            width: 200px;
+            text-align: center;
+        }
+        
+        
+        /* COMP 3 */
+        .timeContainer {
+            position: absolute;
+            top:10px;
+            left:75px;
+            display: flex;
+            flex-direction: column;
+            align-items:flex-start;
+            justify-content: center;
+            font-weight: 100;
+        }
+        .timeContainer .time {
+            font-size: 50px;
+        }
+        .timeContainer .date {
+            font-size: 27px;
+        }
+
+
+        /* COMP 4 */
+        .todayContainer {
+            position: absolute;
+            top:190px;
+            left:75px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            gap:5px;
+            padding: 1em .5em;
+            font-weight: 100;
+            border: 1px solid white;
+            border-radius: 7px;
+            background-color: rgba(0, 0, 0, 0.772);
+        }
+        .todayContainer .detail {
+            width: 300px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-transform: capitalize
+        }
+
+
+        /* COMP 5 */
+.week {
+    position: fixed;
+    bottom: 0px;
+    width: 100vw;
+    height: 40vh;
+    padding: .5em 3em;
+    padding-top: 1em;
+    opacity: 1;
+    align-items: center;
+    display: flex;
+    color: white;
+    font-weight: 300;
+    overflow: hidden;
+    overflow-x: scroll;
+    gap: 60px;
+    transition: .4s;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.week::-webkit-scrollbar {
+    display: none;
+}
+
+.week .Tomorrow,
+.week .day {
+    border: 1px solid white;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.742);
+    text-transform: capitalize
+
+}
+
+.week .Tomorrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2em 0em;
+    gap: 20px;
+    min-width: 470px;
+}
+
+.week .Tomorrow img {
+    width: 35%;
+}
+
+.Tomorrow .info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.Tomorrow span:nth-child(1),
+.day span:nth-child(1) {
+    background-color: #33333c;
+    padding: .1em 1em;
+    text-align: center;
+    border-radius: 12px;
+}
+
+.week .day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1em;
+    flex:1;
+    /* min-width: 10%; */
+    min-width: 275px;
+}
+
+.day span {
+    display: block;
+    font-size: 15px;
+    align-self: flex-start;
+}
+
+.day span:nth-child(1) {
+    font-size: initial;
+    width: 65px;
+    margin: auto;
+    text-align: center;
+}
+
+.day i {
+    align-self: center;
+    font-size: 30px;
+    padding: 1em 0em;
+}
+
+
+
+ @media(max-width:1025px) {
+  .week {
+    height: 35vh;
+  }
+  .week .Tomorrow,
+  .week .day {
+    font-size: 15px;
+  }
+  .week .Tomorrow img {
+    width: 25%;
+  }
+    .day img {
+    width: 30%;
+    }
+}
+@media(max-width:950px){
+    .search{
+        width: initial;
+        right:75px;
+    }
+}
+ @media(max-width:725px) {
+    .search{
+        width: 100%;
+        right:unset;
+    }
+    body {
+        height: 140vh;
+    }
+    .timeContainer{
+        background-color: rgba(0, 0, 0, 0.742);
+        width: 100%; 
+        align-items: center;
+        left:0; 
+        top:33vh;
+        text-align: center;
+    }
+    .timeContainer .time {
+        font-size: 50px;
+    }
+    .timeContainer .date {
+        font-size: 30px;
+    }
+    .todayContainer{
+        width: 400px;
+        font-size: 18px;
+        align-items: center;
+        margin-left: auto;
+        margin-right: auto;
+        top:63vh;
+        left: 0;
+        right: 0; 
+    }
+    .week{
+        position: absolute;
+        bottom: 0px;
+        padding-left: 1em;
+    }
+}
+@media(max-width:390px){
+    .todayContainer,
+    .searchInput{
+        width: 100%;
+    }
 }
