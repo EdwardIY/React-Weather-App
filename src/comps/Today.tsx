@@ -32,20 +32,29 @@ export default function Today({ searchType, searching, setSearchType, isSearchin
     }, [searching])
     
     async function myLocation() {
-        let result;
-        result = await fetchWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${homeCoords && homeCoords[0]}&lon=${homeCoords && homeCoords[1]}&appid=bf24319051981742cc7c6e9da6376dd2&units=imperial`)
-        result.Location = await fetch('https://ipapi.co/json/').then(response => response.json()).then((data) => data.city)
+        let result:any;
+        try {
+            result = await fetchWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${homeCoords && homeCoords[0]}&lon=${homeCoords && homeCoords[1]}&appid=bf24319051981742cc7c6e9da6376dd2&units=imperial`)
+            result.Location = await fetch('https://ipapi.co/json/').then(response => response.json()).then((data) => data.city)
+        } catch (err) {
+            console.log(err)
+        }
         
-        if(result) setWeather(result)
+         if(result) setWeather(result)
     }
 
     async function searchedLocation() {
-        let result;
+        let result:any;
         if (searchType === 2)
             result = await fetchWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${searchDetails[0] && searchDetails[0]}&lon=${searchDetails[1] && searchDetails[1]}&appid=bf24319051981742cc7c6e9da6376dd2&units=imperial`)
-        else if(searchType === 1 && typeof searchDetails[0] === 'string'){
-            result = await fetchWeather(`https://api.openweathermap.org/data/2.5/weather?q=${searchDetails[0]},${searchDetails[1]}&appid=bf24319051981742cc7c6e9da6376dd2&units=imperial`)
-            result.Location = searchDetails[0]
+        else if (searchType === 1 && typeof searchDetails[0] === 'string') {
+            try {
+                result = await fetchWeather(`https://api.openweathermap.org/data/2.5/weather?q=${searchDetails[0]},${searchDetails[1]}&appid=bf24319051981742cc7c6e9da6376dd2&units=imperial`)
+                result.Location = searchDetails[0]
+            } catch (err:any) {
+                console.log(err)
+            }
+
         } 
 
         if(result) setWeather(result)
@@ -66,6 +75,7 @@ export default function Today({ searchType, searching, setSearchType, isSearchin
                 }
                 else return res.json()
             })
+            .catch(err => console.log(err))
             .then(data => {
                 console.log(data);                
                 return {
@@ -75,10 +85,8 @@ export default function Today({ searchType, searching, setSearchType, isSearchin
                     Humidity: Math.floor(data.main.humidity) + '%',
                     Feels_Like: Math.floor(data.main.feels_like) + '°F',
                     Wind_Speed: Math.floor(data.wind.speed) + 'Mph'
-                }
-
-                     
-            })
+                }     
+            }).catch(err => console.log(err))
     }
 
 

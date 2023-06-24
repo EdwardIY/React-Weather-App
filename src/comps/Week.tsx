@@ -27,18 +27,35 @@ export default function Week({ searchType, searching, setSearchType, isSearching
     }, [searching]);
 
     async function myLocation() {
-        const data = await fetchWeather(`https://api.openweathermap.org/data/2.5/forecast?lat=${homeCoords && homeCoords[0]}&lon=${homeCoords && homeCoords[1]}&appid=bf24319051981742cc7c6e9da6376dd2&units=imperial`);
-        const result = filterLists(data.list);
-        setWeather(result)
+        let result;
+        try { 
+            const data = await fetchWeather(`https://api.openweathermap.org/data/2.5/forecast?lat=${homeCoords && homeCoords[0]}&lon=${homeCoords && homeCoords[1]}&appid=bf24319051981742cc7c6e9da6376dd2&units=imperial`);
+            result = filterLists(data.list);
+
+        }
+        catch (err) {
+            console.log(err)
+        }
+        if(result) setWeather(result)
     }
 
 
     async function searchedLocation() {
         let data;
-        if (searchType === 2)
-            data = await fetchWeather(`https://api.openweathermap.org/data/2.5/forecast?lat=${searchDetails && searchDetails[0]}&lon=${searchDetails && searchDetails[1]}&appid=bf24319051981742cc7c6e9da6376dd2&units=imperial`);
-        else if (searchType === 1)
-            data = await fetchWeather(`https://api.openweathermap.org/data/2.5/forecast?q=${searchDetails[0]},${searchDetails[1]}&appid=bf24319051981742cc7c6e9da6376dd2&units=imperial`);
+        if (searchType === 2) {
+            try {
+                data = await fetchWeather(`https://api.openweathermap.org/data/2.5/forecast?lat=${searchDetails && searchDetails[0]}&lon=${searchDetails && searchDetails[1]}&appid=bf24319051981742cc7c6e9da6376dd2&units=imperial`);
+            } catch (err) {
+                console.log(err)
+            }
+        }
+        else if (searchType === 1) {
+            try {
+                data = await fetchWeather(`https://api.openweathermap.org/data/2.5/forecast?q=${searchDetails[0]},${searchDetails[1]}&appid=bf24319051981742cc7c6e9da6376dd2&units=imperial`);
+            } catch (err) {
+                console.log(err)
+            }
+        }
         
             const result = filterLists(data.list);
             setWeather(result)
@@ -61,7 +78,7 @@ export default function Week({ searchType, searching, setSearchType, isSearching
             }).then((data) => {
             isSearching(false)
             return data
-        })
+            }).catch(err => console.log(err))
     }
     function filterLists(timeStamps: any) {
         const list = timeStamps

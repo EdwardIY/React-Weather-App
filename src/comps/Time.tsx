@@ -55,7 +55,13 @@ export default function Time({searchType,searching,setSearchType,isSearching,sea
 
   async function searchedTime() {
     if (searchType === 2) {
-      if (timeZone === null) await fetchTimeZone(`https://api.openweathermap.org/data/2.5/weather?lat=${searchDetails[0]}&lon=${searchDetails[1]}&appid=bf24319051981742cc7c6e9da6376dd2`)
+      if (timeZone === null) {
+        try {
+          await fetchTimeZone(`https://api.openweathermap.org/data/2.5/weather?lat=${searchDetails[0]}&lon=${searchDetails[1]}&appid=bf24319051981742cc7c6e9da6376dd2`)
+        } catch (err) {
+            console.log(err)
+        }
+      } 
 
       if (timeZone !== null) {
         let timeInfo = formatTimeZone(timeZone);
@@ -65,7 +71,13 @@ export default function Time({searchType,searching,setSearchType,isSearching,sea
  
     }
     else if (searchType == 1) {
-      if (timeZone === null) await fetchTimeZone(`https://api.openweathermap.org/data/2.5/weather?q=${searchDetails[0]},${searchDetails[1]}&appid=bf24319051981742cc7c6e9da6376dd2`)
+      if (timeZone === null) {
+        try {
+          await fetchTimeZone(`https://api.openweathermap.org/data/2.5/weather?q=${searchDetails[0]},${searchDetails[1]}&appid=bf24319051981742cc7c6e9da6376dd2`)
+        } catch (err) {
+          console.log(err)
+        }
+      } 
 
       if (timeZone !== null) {
         let timeInfo = formatTimeZone(timeZone);
@@ -84,17 +96,18 @@ export default function Time({searchType,searching,setSearchType,isSearching,sea
         if (res.status == 404) {
           setTimeout(() => {
             setError(false)
-        }, 1000)
+          }, 1000)
           setError(res.statusText)
           isSearching(false)
           setSearchType(0)
         }
         else return res.json()
-    })
+      })
       .then((data) => {
         console.log(data)
         timeZone = data.timezone
       })
+      .catch(err => console.log(err))
 
   }
   function formatTimeZone(timeZone: any) {

@@ -1,6 +1,38 @@
 import { Search as SearchIcon } from 'react-bootstrap-icons';
 import { useRef,useState,useEffect } from 'react';
 
+const countries:any = {
+    unitedstates: "US",
+    unitedstatesofamerica: "US",
+    theunitedstatesofamerica: "US",
+    theunitedstates: "US",
+    northamerica: "US",
+    canada: "CA",
+    theunitedkingdom: "UK",
+    unitedkingdom: "UK",
+    germany: "DE",
+    france: "FR",
+    japan: "JP",
+    italy: "IT",
+    australia: "AU",
+    newzealand: "NZ",
+    spain: "ES",
+    netherlands: "NL",
+    belgium: "BE",
+    sweden: "SE",
+    switzerland: "CH",
+    denmark: "DK",
+    norway: "NO",
+    finland: "FI",
+    austria: "AT",
+    ireland: "IE",
+    iceland: "IS",
+    luxembourg: "LU",
+    singapore: "SG",
+    hongkong: "HK",
+    china: "CN",
+  };
+  
 interface SearchProps {
     setSearchType : Function,
     searchType: number,
@@ -19,12 +51,13 @@ export default function Search({setSearchType, searchType,setSearchDetails, isSe
 
     const _InputConatinerStylesForCoords = {width:'initial'}
     const _InputStylesForCoords = {
-        border: '1px solid white',
+        border: '1px solid rgba(255, 255, 255, 0.192)',
+        borderRadius: '10px',
         width: 'initial',
         paddingLeft: '0em'
     };
 
-    const cityExamples = ['Toronto,CA', 'Las Vegas,US', 'London,UK','Phoenix,US','Ottawa,CA'];
+    const cityExamples = [['Las Vegas','United States'], ['London','United Kingdom'], ['New York','United States'],['Phoenix','US'],['Ottawa','CA']];
     const coordExamples = [[40.7128, -74.0060], [36.1716, -115.1391], [51.5072, -0.1276]];
 
     useEffect(() => {
@@ -61,9 +94,10 @@ export default function Search({setSearchType, searchType,setSearchDetails, isSe
             }
             else {
                 console.log('set Searching to true: Search COMP')
-                let result:[boolean,string?] = type1_TEST(input_1.current.value)
+                let result:[boolean,string?,string?] = type1_TEST(input_1.current.value,input_2.current.value)
                 if (result[0]) {
-                    setSearchDetails(input_1.current.value.split(','))
+                    console.log(result)
+                    setSearchDetails([result[1],result[2]])
 
                     setSearchType(1)
                     isSearching(true);
@@ -92,10 +126,14 @@ export default function Search({setSearchType, searchType,setSearchDetails, isSe
         if(!searchType || searchType === 1) setSearchType(2)
         else setSearchType(1)
         input_1.current.value = '';
+        input_2.current.value = '';
     }
     function showExample() {
-        if(searchType === 1 || searchType === 0)
-            input_1.current.value = cityExamples[Math.floor(Math.random() * 5)]
+        if (searchType === 1 || searchType === 0) {
+            let chosen = Math.floor(Math.random() * 5)
+            input_1.current.value = cityExamples[chosen][0]
+            input_2.current.value = cityExamples[chosen][1]
+        }
         else if (searchType === 2) {
             let chosen = Math.floor(Math.random() * 3);
             input_1.current.value = coordExamples[chosen][0];
@@ -111,18 +149,20 @@ export default function Search({setSearchType, searchType,setSearchDetails, isSe
                 className="searchInput">
             <input
                 ref={input_1}
-                style={searchType === 2 ? _InputStylesForCoords : {}}
+                style={_InputStylesForCoords}
                 type="text"
-                placeholder={searchType === 2  ? 'Enter Latitude' : 'City Name,Country Code(Alpha-2)'}
+                required
+                placeholder={searchType === 2  ? 'Enter Latitude' : 'City Name'}
             />
-            {searchType === 2 &&
             <input
                 ref={input_2}
                 style={_InputStylesForCoords}
                 type="text"
-                placeholder='Enter Longitude' />
-            }
-            <SearchIcon onClick={() => handleStartSearch()} />
+                required
+                placeholder={searchType === 2  ? 'Enter Longitude' : 'Country Name'}
+            />
+            
+            <SearchIcon type='submit' onClick={() => handleStartSearch()} />
             
             </div>
             <div className="searchOC">
@@ -135,18 +175,36 @@ export default function Search({setSearchType, searchType,setSearchDetails, isSe
     </section>
 }
 
-function type1_TEST(city: String):[boolean,string?] {
-    const chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz, ';
-    if (!city) return [false, 'Empty Search Query'];
+function type1_TEST(city: string,country:string):[boolean,string?,string?] {
+    const chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz ';
+    if (!city) return [false, 'Empty City Input'];
+    if (!country) return [false, 'Empty Country Input'];
+
+
+    // Check city name
     for (let i = 0; i < city.length; i++){
-        if (!chars.includes(city[i])) return [false, 'Search Query contains invalid characters'];
+        if (!chars.includes(city[i])) return [false, 'City name contains invalid characters'];
     };
-    if (!city.includes(',')) return [false, 'Comma must seperate City and Country'];
-
-    let query = city.split(',').map((entry) =>entry.trim().toLocaleLowerCase());
-    if (query[1].length !== 2) return [false, 'Invalid Country Code'];
-
-    return [true];
+    // Check country name
+    if (country.length == 2) {
+        if (Object.values(countries).includes(country.toUpperCase())) {
+            city = city.trim().toLocaleLowerCase()
+            country = country.toLocaleLowerCase()
+            return [true,city,country] // Both city and country Tests passed
+        }
+        else return [false, 'Country not found :('] 
+    }
+    else {
+        for (let i = 0; i < country.length; i++){
+            if (!chars.includes(country[i])) return [false, 'Country name contains invalid characters'];
+        };
+        if (countries[country.toLowerCase().trim().replace(/\s+/g, "")]) {
+            city = city.trim().toLocaleLowerCase()
+            country = countries[country.toLowerCase().trim().replace(/\s+/g, "")]
+            return [true,city,country] // Both city and country Tests passed
+        }
+        else return [false, 'Country not found :(']
+    }
 }
 
 function type2_TEST(lat: number, lon: number) {

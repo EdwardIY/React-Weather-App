@@ -26,10 +26,10 @@
         }
         .btn {
             background-color: rgba(0, 0, 0, 0.61);
-            width: 150px;
+            width: 160px;
             text-align: center;
             padding: .4em 0em;
-            border-radius: 15px;
+            border-radius: 18px;
             font-weight: 200;
             transition: .2s;
             cursor: pointer;
@@ -119,8 +119,7 @@
             border-radius: 23px;
             padding: .6em .8em;
             cursor: pointer;
-            width: 375px;
-
+            transition: 1s;
         }
         .searchInput input {
             color: inherit;
@@ -131,10 +130,11 @@
             text-align: center;
         }
         .searchInput svg {
-            color:rgba(245, 245, 245, 0.724);
-            font-size: 20px;
+            color:rgba(245, 245, 245, 0.75);
+            font-weight: bold;
+            font-size: 19px;
         }
-        .searchInput i:hover {
+        .searchInput svg:hover {
             color:white;
         }
         .searchOC {
