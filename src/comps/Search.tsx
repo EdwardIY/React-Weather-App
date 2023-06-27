@@ -40,11 +40,12 @@ interface SearchProps {
     setSearchDetails:Function,
     error: string | boolean,
     setError: Function
-
-             
+    permisson: boolean
+    setPermission:Function
+    // loading:boolean          
 }
 
-export default function Search({setSearchType, searchType,setSearchDetails, isSearching, error, setError }: SearchProps) {
+export default function Search({setSearchType, searchType,setSearchDetails, isSearching, error, setError, permisson, setPermission }: SearchProps) {
     const input_1 = useRef<any>() 
     const input_2 = useRef<any>()
     const [exampleBtn,setExampleBtn] = useState(false)
@@ -115,11 +116,21 @@ export default function Search({setSearchType, searchType,setSearchDetails, isSe
 
     }
     function handleMyLocation() {
-        setExampleBtn(false)
-        setSearchType(0)
-        isSearching(true)
-        input_1.current.value = '';
-
+            if (permisson) {
+                setExampleBtn(false)
+                setSearchType(0)
+                isSearching(true)
+                input_1.current.value = '';
+                input_2.current.value = '';
+            }
+            else {
+          
+                if (typeof permisson == 'number')
+                    setPermission(false)
+                else setPermission(0)
+                console.log("Set permission to false in Search to retrigger 'ASK'")
+            }  // Trigger the useEffect that asks for permission
+        
     }
     function handleToggleSearchType(e: any) {
         setExampleBtn(false)
@@ -170,7 +181,7 @@ export default function Search({setSearchType, searchType,setSearchDetails, isSe
                 <div className="btn btn-b" onClick={ handleToggleSearchType}>{!searchType || searchType === 1 ? 'Use Coordinates' : 'Use City Name' }</div>
         </div>
         {exampleBtn && <div onClick={()=> showExample()} className="btn btn-b">See Examples</div> }
-        <div style={error ? { opacity: '1', marginTop: '-1em' } : {}} className="msg">{error}</div>
+        <div style={error ? { opacity: '1', marginTop: '-.5em' } : {}} className="msg">{error}</div>
         {/* <div ref={exampleMessage} style={exampleVisable ? { opacity: '1', marginTop: '-3.5em' } : {}} className="msg msg_2"></div> */}
     </section>
 }

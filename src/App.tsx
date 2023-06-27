@@ -11,29 +11,39 @@ export default function App() {
     const [searchType, setSearchType] = useState<number>(0) //0 = MyLocation   1 = UseCityName   2 = UseCoordinates
     const [searchDetails,setSearchDetails] = useState<string | number[]>([-1])
     const [searching, isSearching] = useState<boolean>(false)
-    const [loading, isLoading] = useState<boolean>(false);
+    const [loading, isLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | boolean>(false)
+    const [permisson,setPermission] = useState(false) // location permission
     
     useEffect(() => {   // On Page Load get home coords
-        isLoading(true)
-        if (!homeCoords) {
+        if (!homeCoords || !permisson) {
             navigator.geolocation.getCurrentPosition((position) => {
+                console.log('getting location ')
+                setPermission(true)
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
                 setHomeCoords([lat, lon])
+                isSearching(true)
+            }, (err) => {
+                console.log(err)
+                setError('Location is denied')
+                setTimeout(() => setError(false), 3000)
+                setPermission(false)
                 isLoading(false)
             })
         }
-    }, [])
+    }, [permisson])
 
     useEffect(() => { 
-        if (searching) isLoading(true);
-        else isLoading(false)
+        if ((searchDetails[0] != -1) || homeCoords) {
+            if (searching) isLoading(true);
+            else isLoading(false)
+        }
     },[searching])
 
     return (
         <>
-{/*COMP 1 */}<Loader loading={loading} /> 
+{/*COMP 1 */}{loading  && <Loader/>  }
 {/*COMP 2 */}<Search                   
                 searchType={searchType}
                 setSearchType={setSearchType}
@@ -41,6 +51,9 @@ export default function App() {
                 isSearching={isSearching}
                 error={error}
                 setError={setError}
+                permisson={permisson}
+                setPermission={setPermission}
+                // loading={loading}
             />
 {/*COMP 3 */}<Time
                 searchType={searchType}

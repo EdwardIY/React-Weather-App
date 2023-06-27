@@ -34,6 +34,7 @@ export default function Today({ searchType, searching, setSearchType, isSearchin
     async function myLocation() {
         let result:any;
         try {
+            console.log(homeCoords)
             result = await fetchWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${homeCoords && homeCoords[0]}&lon=${homeCoords && homeCoords[1]}&appid=bf24319051981742cc7c6e9da6376dd2&units=imperial`)
             result.Location = await fetch('https://ipapi.co/json/').then(response => response.json()).then((data) => data.city)
         } catch (err) {

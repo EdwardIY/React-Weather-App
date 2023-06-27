@@ -15,7 +15,7 @@
             width: 100vw;
             background-size: cover;
             background-repeat: no-repeat;
-            background-color: rgba(0, 0, 0, 0.484);
+            background-color: rgba(0, 0, 0, 0.457);
             background-blend-mode: overlay;
             font-family: poppins;
             position: relative;
@@ -192,6 +192,7 @@
             border: 1px solid white;
             border-radius: 7px;
             background-color: rgba(0, 0, 0, 0.772);
+            box-shadow: 0px 0px 27px 9px rgba(0,0,0,0.75);
         }
         .todayContainer .detail {
             width: 300px;
@@ -230,8 +231,8 @@
     border: 1px solid white;
     border-radius: 10px;
     background-color: rgba(0, 0, 0, 0.742);
-    text-transform: capitalize
-
+    text-transform: capitalize;
+    box-shadow: 0px 0px 27px 9px rgba(0,0,0,0.75);
 }
 
 .week .Tomorrow {
@@ -312,6 +313,10 @@
         width: initial;
         right:75px;
     }
+    .week .Tomorrow,
+.week .day {
+    box-shadow: none;
+}
 }
  @media(max-width:725px) {
     .search{
@@ -350,6 +355,23 @@
         bottom: 0px;
         padding-left: 1em;
     }
+}
+@media(max-width:420px){
+    .search {
+        background: transparent;
+    }
+   .searchInput{
+    border-radius: 0px;
+    flex-direction: column;
+    gap:1em;
+    width: 100vw;
+   }
+   .searchInput svg {
+    display: none;
+   }
+   .week .Tomorrow {
+    min-width: 325px;
+}
 }
 @media(max-width:390px){
     .todayContainer,
